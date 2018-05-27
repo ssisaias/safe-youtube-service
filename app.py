@@ -2,13 +2,14 @@
 # Imports
 #----------------------------------------------------------------------------#
 
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, jsonify
 # from flask.ext.sqlalchemy import SQLAlchemy
 import logging
 from logging import Formatter, FileHandler
 from forms import *
 import os
-
+from flask_redis import FlaskRedis
+import json
 #----------------------------------------------------------------------------#
 # App Config.
 #----------------------------------------------------------------------------#
@@ -16,6 +17,7 @@ import os
 app = Flask(__name__)
 app.config.from_object('config')
 #db = SQLAlchemy(app)
+redis_store = FlaskRedis(app)
 
 # Automatically tear down SQLAlchemy.
 '''
@@ -43,7 +45,24 @@ def login_required(test):
 
 @app.route('/')
 def home():
-    return render_template('pages/placeholder.home.html')
+    good = redis_store.get('ei2-RjJDBHc:good')
+    bad = redis_store.get('ei2-RjJDBHc:bad')
+        
+    if good and bad:
+        value = {}
+        value["good"] = good.decode('utf-8')
+        value["bad"] = bad.decode('utf-8')
+        #verificar se achou a classificação, se achou envia de volta, senão deve iniciar a thread/worker que ira 'dumpar' os comentários
+        print('\n')
+        print(value)
+        print('\n')
+        print('FOUND IT!')
+        return jsonify(value)
+    else:
+        print('DIDN\'T FOUND!')
+        return jsonify("NOPE")
+    
+    #return render_template('pages/placeholder.home.html')
 
 
 @app.route('/about')

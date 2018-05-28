@@ -45,9 +45,18 @@ def login_required(test):
 
 @app.route('/')
 def home():
-    good = redis_store.get('ei2-RjJDBHc:good')
-    bad = redis_store.get('ei2-RjJDBHc:bad')
-        
+    return render_template('pages/placeholder.home.html')
+
+@app.route('/video')
+def video():
+    video_id = request.args.get('id')
+
+    if not video_id:
+        return render_template('errors/400.html'), 400
+
+    good = redis_store.get(video_id+':good')
+    bad = redis_store.get(video_id+':bad')
+
     if good and bad:
         value = {}
         value["good"] = good.decode('utf-8')
@@ -57,13 +66,10 @@ def home():
         print(value)
         print('\n')
         print('FOUND IT!')
-        return jsonify(value)
+        return jsonify(value), 200
     else:
         print('DIDN\'T FOUND!')
-        return jsonify("NOPE")
-    
-    #return render_template('pages/placeholder.home.html')
-
+        return jsonify("NOPE"), 202
 
 @app.route('/about')
 def about():

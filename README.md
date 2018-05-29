@@ -1,4 +1,5 @@
 ## COMMANDS FOR CMDER:
+
 ``` 
 cd into folder
 ```
@@ -15,6 +16,10 @@ $ pip install -r requirements.txt
 ```
 $ py app.py
 ```
+
+Python version:
+3.6.4
+
 Project Structure
 --------
 

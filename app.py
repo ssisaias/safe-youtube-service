@@ -10,6 +10,8 @@ from forms import *
 import os
 from flask_redis import FlaskRedis
 import json
+from rq import Queue
+from classifier import classify
 #----------------------------------------------------------------------------#
 # App Config.
 #----------------------------------------------------------------------------#
@@ -18,7 +20,7 @@ app = Flask(__name__)
 app.config.from_object('config')
 #db = SQLAlchemy(app)
 redis_store = FlaskRedis(app)
-
+jobQueue = Queue('normal', connection=redis_store._redis_client) #'normal' is just the queue name
 # Automatically tear down SQLAlchemy.
 '''
 @app.teardown_request
@@ -68,8 +70,10 @@ def video():
         print('FOUND IT!')
         return jsonify(value), 200
     else:
-        print('DIDN\'T FOUND!')
+        print('DIDN\'T FOUND! Will try to obtain and classify video comments')
+        result = jobQueue.enqueue(classify,video_id)
         return jsonify("NOPE"), 202
+
 
 @app.route('/about')
 def about():

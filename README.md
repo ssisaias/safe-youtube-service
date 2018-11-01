@@ -4,21 +4,17 @@
 cd into folder
 ```
 ```
-# If first time executing:
-$ py env\Scripts\activate
-````
-```
-$ env\Scripts\activate
+$ source bin/activate
 ```
 ```
-$ pip install -r requirements.txt
+$ pip3 install -r requirements.txt
 ```
 ```
-$ py app.py
+$ python3 app.py
 ```
 
 Python version:
-3.6.4
+3.6.7 with python3 venv (e.g.  python3 -m venv safe-youtube-service/)
 
 Project Structure
 --------
